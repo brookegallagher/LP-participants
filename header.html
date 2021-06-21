@@ -1,0 +1,58 @@
+<nav class="navbar navbar-expand-md navbar-dark bg-primary">
+    <div class="container">
+        <!-- Brand link -->
+        <a class="navbar-brand" href="{{ url_for('overviews') }}">ClubCal</a>
+        <!-- Hamburger menu -->
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <!-- Nav links -->
+        <div class="collapse navbar-collapse my-sm-0" id="navbarSupportedContent">
+            <ul class="navbar-nav ml-auto">
+                <li id="pres_page_title" class="nav-item {%- if request.path == url_for('presidents') %} active{% endif %}">
+                </li>
+                <li id='admin_page_title' class="nav-item {%- if request.path == url_for('admin') %} active{% endif %}">
+                </li>
+                <li class="nav-item {%- if request.path == url_for('about') %} active{% endif %}">
+                    <a class="nav-link" href="{{ url_for('about') }}">About</a>
+                </li>
+            </ul>
+            <!-- Adapted from: https://www.codeply.com/go/8PFsAfsm7C/bootstrap-log-out-modal -->
+            <button class="btn btn-danger" data-toggle="modal" data-target=".bs-example-modal-sm">Logout</button>
+            <div class="modal bs-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog modal-sm">
+                    <div class="modal-content">
+                        <div class="modal-header"><h4>Logout <i class="fa fa-lock"></i></h4></div>
+                        <div class="modal-body"><i class="fa fa-question-circle"></i> Are you sure you want to log-off?</div>
+                        <div class="modal-footer"><a href="/logout" class="btn btn-danger btn-block">Logout</a></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+<script>
+    function setup() {
+       let permissionsRequest = $.ajax({
+          type: 'GET',
+          url: '/isAdmin',
+          dataType: 'json',
+          success: function(response){
+            if (response['isPres']) {
+                let href = "{{ url_for('presidents') }}"
+                let html = "<a class='nav-link' id='presval' href='"+href+"'>"+response["club"]+"</a>" +
+                    "<input type='hidden' id='valid_club_name' value='"+response['club']+"'>";
+                $("#pres_page_title").html(html);
+            }
+            if (response['isAdmin']) {
+                href="{{ url_for('admin') }}"
+                let html ="<a class='nav-link' href='"+href+"'>Administrator</a>";
+                $('#admin_page_title').html(html);
+            }
+            }
+        });
+   }  
+        
+   $('document').ready(setup); 
+  
+</script>
